@@ -6,12 +6,18 @@
 //
 
 import SwiftUI
-
+/*
 @main
 struct DemoAppApp: App {
+    @State var changeView = false
     var body: some Scene {
         WindowGroup {
-            CameraView()
+            if changeView {
+                DisplayView()
+            }else{
+                CameraView()
+            }
         }
     }
 }
+*/

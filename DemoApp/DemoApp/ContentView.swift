@@ -10,8 +10,26 @@ import Combine
 import Camera_SwiftUI
 import AVFoundation
 
+
+
+
+
 final class CameraModel: ObservableObject {
     private let service = CameraService()
+    
+    
+    @main
+    struct DemoAppApp: App {
+        @State var changeView = false
+        var body: some Scene {
+            WindowGroup {
+               
+                CameraView()
+                
+            }
+        }
+    }
+    
     
     @Published var photo: Photo!
     
@@ -75,9 +93,34 @@ final class CameraModel: ObservableObject {
     }
 }
 
+struct DisplayView: View {
+    @StateObject var model = CameraModel()
+    @State var currentZoomFactor: CGFloat = 1.0
+    
+    var body: some View {
+        
+        if model.photo != nil {
+            Image(uiImage: model.photo.image!)
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .frame(width: 60, height: 60)
+                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                //.animation(.spring())
+            
+        } else {
+            RoundedRectangle(cornerRadius: 10)
+                .frame(width: 60, height: 60, alignment: .center)
+                .foregroundColor(.black)
+        }
+
+        
+    }
+    
+    
+}
+
 struct CameraView: View {
     @StateObject var model = CameraModel()
-    
     @State var currentZoomFactor: CGFloat = 1.0
     
     var captureButton: some View {
@@ -96,14 +139,16 @@ struct CameraView: View {
     }
     
     var capturedPhotoThumbnail: some View {
+        
         Group {
+            
             if model.photo != nil {
                 Image(uiImage: model.photo.image!)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
                     .frame(width: 60, height: 60)
                     .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-                    .animation(.spring())
+                    //.animation(.spring())
                 
             } else {
                 RoundedRectangle(cornerRadius: 10)
@@ -112,6 +157,8 @@ struct CameraView: View {
             }
         }
     }
+    
+    
     
     var flipCameraButton: some View {
         Button(action: {
@@ -125,6 +172,8 @@ struct CameraView: View {
                         .foregroundColor(.white))
         })
     }
+    
+    
     
     var body: some View {
         NavigationView {
@@ -174,13 +223,14 @@ struct CameraView: View {
                                     }
                                 }
                             )
-                            .animation(.easeInOut)
+                            //.animation(.easeInOut)
                         
                         
                         HStack {
-                            NavigationLink(destination: Text("Detail photo")) {
-                                capturedPhotoThumbnail
-                            }
+                           // NavigationLink(destination: Text("Detail photo")) {
+                           //     capturedPhotoThumbnail
+                                
+                           // }
                             
                             Spacer()
                             
@@ -189,9 +239,25 @@ struct CameraView: View {
                             Spacer()
                             
                             flipCameraButton
-                            
                         }
                         .padding(.horizontal, 20)
+                        HStack {
+                            Spacer()
+                            Group {
+                                if model.photo != nil {
+                                    Image(uiImage: model.photo.image!)
+                                        .resizable()
+                                        //.aspectRatio(contentMode: .fill)
+                                        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                                        //.animation(.spring())
+                                    
+                                } else {
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .foregroundColor(.black)
+                                }
+                            }
+                            Spacer()
+                        }
                     }
                 }
             }
